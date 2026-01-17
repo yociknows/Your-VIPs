@@ -160,14 +160,30 @@
 
     window.onload = () => { renderTable(); updateMsg(); };
 
-    function calculateBalance() {
-        let balance = friends.length * 1000000;
+   function calculateBalance() {
+        let totalBalance = 0;
         const today = new Date();
+
         friends.forEach(f => {
+            // 1. 基本底薪 $2,000 + 實力加成 (資源+專業 每分$3,000)
+            let baseValue = 2000 + (Number(f.wealth) + Number(f.expert)) * 3000;
+            
+            // 2. 情感加成 (情感 每分$2000)
+            let emotionBonus = Number(f.emotion) * 2000;
+            
+            let personValue = baseValue + emotionBonus;
+
+            // 3. 熱絡加權 (30天內聯繫，價值放大 1.5 倍)
             const diff = Math.floor((today - new Date(f.lastTouch)) / (1000 * 60 * 60 * 24));
-            if (diff < 30) balance += 500000;
+            if (diff < 30) {
+                personValue = personValue * 1.5; 
+            }
+
+            totalBalance += personValue;
         });
-        document.getElementById('totalBalance').innerText = balance.toLocaleString();
+
+        // 顯示總資產，四捨五入並轉為千分位格式
+        document.getElementById('totalBalance').innerText = Math.round(totalBalance).toLocaleString();
     }
 
     function renderTable() {
