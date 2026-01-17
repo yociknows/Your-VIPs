@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>遇貴人｜您的尊爵人脈金庫</title>
+    <title>遇貴人｜您的人脈存摺</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json">
@@ -73,7 +73,7 @@
 
 <div class="container">
     <div class="brand-header">
-        <h1>✨ 遇貴人｜人脈金庫</h1>
+        <h1>✨ 遇貴人｜您的人脈存摺</h1>
         <div class="subtitle">讓每一次相遇，都成為您金庫裡的珍貴資產。</div>
     </div>
     
@@ -91,7 +91,7 @@
 
     <div class="task-dashboard">
         <div class="balance-box">💰 當前貴人資產：$<span id="totalBalance">0</span></div>
-        <div id="taskList" style="font-size:13px; color:#666;">智慧管家巡邏中：希希姊，目前溫度良好。</div>
+        <div id="taskList" style="font-size:13px; color:#666;">智慧管家巡邏中：希姊，目前溫度良好。</div>
     </div>
 
     <div class="input-scroll-container">
@@ -154,8 +154,8 @@
 </div>
 
 <script>
-    let friends = JSON.parse(localStorage.getItem('yociVaultV22') || '[]');
-    let userName = localStorage.getItem('yociUserV22') || '希希姊';
+    let friends = JSON.parse(localStorage.getItem('yociVaultFinal') || '[]');
+    let userName = localStorage.getItem('yociVaultFinal') || '希姊';
     let curDate = new Date();
 
     window.onload = () => { renderTable(); updateMsg(); };
@@ -214,15 +214,14 @@ function addFriend() {
         const e = document.getElementById('valEmotion').value;
         const ex = document.getElementById('valExpert').value;
 
-        if(!n || !b) return alert("希希姊，請填寫姓名生日！");
+        if(!n || !b) return alert("希姊，請填寫姓名生日！");
         friends.unshift({id: Date.now(), name: n, bday: b, category: cat, lastTouch: lt, wealth: w, emotion: e, expert: ex, note: ""});
         localStorage.setItem('yociVaultFinal', JSON.stringify(friends)); 
         renderTable();
-        document.getElementById('name').value = ''; 
-    }
+        document.getElementById('name').value = ''; // 存入後自動清空姓名 
     }
 
-    function renderCalendar() {
+     function renderCalendar() {
         const y = curDate.getFullYear(), m = curDate.getMonth();
         document.getElementById('monthTitle').innerText = `${y}年 ${m+1}月`;
         const first = new Date(y, m, 1).getDay(), days = new Date(y, m+1, 0).getDate();
@@ -244,7 +243,7 @@ function addFriend() {
         if(v==='calendar') renderCalendar();
     }
     function showModal() { document.getElementById('helpModal').style.display = 'flex'; }
-    function renameUser() { const n = prompt("管家該如何稱呼您？", userName); if(n) { userName = n; localStorage.setItem('yociUserFinal', n); updateMsg(); } }
+    function renameUser() { const n = prompt("管家該如何稱呼您？", userName); if(n) { userName = n; localStorage.setItem('yociVaultFinal', n); updateMsg(); } }
     function updateMsg() { document.getElementById('taskList').innerText = `智慧管家巡邏中：${userName}，目前溫度良好。`; }
     function saveNote(id, el) { const f = friends.find(x => x.id === id); if(f) { f.note = el.innerText; localStorage.setItem('yociVaultFinal', JSON.stringify(friends)); } }
     function deleteFriend(id) { if(confirm("確定移除？")) { friends=friends.filter(f=>f.id!==id); localStorage.setItem('yociVaultFinal', JSON.stringify(friends)); renderTable(); } }
