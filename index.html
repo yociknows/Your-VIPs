@@ -3,246 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <title>遇貴人｜您的人脈金庫</title>
-   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="遇貴人">
-
-<link rel="manifest" href="manifest.json">
-
-<link rel="apple-touch-icon" href="https://via.placeholder.com/192/b8962d/ffffff?text=遇">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="遇貴人">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://via.placeholder.com/192/b8962d/ffffff?text=遇">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <style>
         :root { --gold: #b8962d; --bg: #fdfaf5; --dark-gold: #8b6e1b; --task-bg: #fff9e6; --red: #e67e22; --blue: #3498db; }
-        body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 1400px; margin: auto; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); min-height: 90vh; }
-        .brand-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        h1 { color: var(--gold); letter-spacing: 2px; font-size: 28px; margin: 0; }
-        .top-tools { display: flex; gap: 10px; align-items: center; }
-        .btn-top { color: white; padding: 6px 15px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: bold; transition: 0.3s; text-decoration: none; display: flex; align-items: center; }
+        body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: #333; overflow-x: hidden; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); min-height: 90vh; }
+        
+        /* 標頭優化 */
+        .brand-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: nowrap; }
+        h1 { color: var(--gold); letter-spacing: 1px; font-size: 20px; margin: 0; white-space: nowrap; }
+        .top-tools { display: flex; gap: 5px; }
+        .btn-top { color: white; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 11px; font-weight: bold; text-decoration: none; white-space: nowrap; }
         .guide-btn { background: #333; }
         .donate-btn { background: var(--gold); }
-        #helpModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-content { background: white; padding: 40px; border-radius: 20px; max-width: 700px; max-height: 85vh; overflow-y: auto; line-height: 1.8; position: relative; }
-        .mode-switch { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
-        .nav-btn { background: #eee; border: none; padding: 10px 25px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+
+        /* 🔥 輸入區橫向捲動優化 */
+        .input-scroll-container { 
+            width: 100%; 
+            overflow-x: auto; 
+            white-space: nowrap; 
+            background: #f9f9f9; 
+            padding: 15px; 
+            border-radius: 15px; 
+            border: 1px solid #eee; 
+            margin-bottom: 20px;
+            -webkit-overflow-scrolling: touch; /* 讓手機滑動更順暢 */
+        }
+        .input-grid-inner { display: inline-flex; gap: 12px; align-items: flex-end; }
+        .input-item { width: 140px; flex-shrink: 0; display: flex; flex-direction: column; }
+        .score-label { font-size: 11px; font-weight: bold; color: var(--dark-gold); margin-bottom: 5px; }
+        input, select { padding: 8px; border-radius: 8px; border: 1px solid #ddd; height: 38px; font-size: 14px; width: 100%; box-sizing: border-box; }
+
+        /* 🔥 清單表格橫向捲動優化 */
+        .list-scroll-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th { background: var(--gold); color: white; padding: 12px 10px; text-align: left; font-size: 13px; }
+        td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; background: white; font-size: 13px; }
+
+        .balance-box { font-size: 18px; color: var(--dark-gold); font-weight: bold; margin-bottom: 10px; }
+        .task-dashboard { background: var(--task-bg); padding: 15px; border-radius: 15px; border: 1px dashed var(--gold); margin-bottom: 20px; }
+        .mode-switch { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .nav-btn { background: #eee; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 13px; flex: 1; max-width: 140px; }
         .active-view { background: var(--gold) !important; color: white !important; }
-        .task-dashboard { background: var(--task-bg); padding: 20px; border-radius: 15px; border: 2px dashed var(--gold); margin-bottom: 25px; }
-        .balance-box { font-size: 22px; color: var(--dark-gold); font-weight: bold; margin-bottom: 10px; }
-       /* 🔥 輸入區修正：確保整齊對齊 */
-        .input-grid { display: flex; gap: 12px; background: #f9f9f9; padding: 20px; border-radius: 15px; margin-bottom: 25px; border: 1px solid #eee; align-items: flex-end; }
-        .input-item { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        .score-label { font-size: 12px; font-weight: bold; color: var(--dark-gold); margin-bottom: 5px; white-space: nowrap; }
-        input, select { padding: 8px; border-radius: 8px; border: 1px solid #ddd; height: 38px; width: 100%; box-sizing: border-box; }
-
-        /* 🔥 行事曆完美修正版 */
-        #calendarView { width: 100%; }
-        .calendar-header-row { 
-            display: grid !important; 
-            grid-template-columns: repeat(7, 1fr) !important; 
-            background: var(--gold); 
-            color: white; 
-            border-radius: 8px 8px 0 0; 
-            width: 100%; 
-            box-sizing: border-box;
-        }
-        .calendar-header-cell { padding: 12px; text-align: center; font-weight: bold; border-right: 1px solid rgba(255,255,255,0.2); }
-        .calendar-grid-container { 
-            display: grid !important; 
-            grid-template-columns: repeat(7, 1fr) !important; 
-            border: 1px solid #ddd; 
-            background: #eee; 
-            width: 100%; 
-            box-sizing: border-box;
-        }
-        .calendar-day-cell { 
-            height: 120px; 
-            background: white; 
-            border: 0.5px solid #eee; 
-            padding: 8px; 
-            overflow-y: auto; 
-            display: flex; 
-            flex-direction: column;
-            box-sizing: border-box;
-        }
-
-        table { width: 100%; border-collapse: collapse; margin-bottom: 50px; }
-        th { background: var(--gold); color: white; padding: 15px 10px; text-align: left; }
-        td { padding: 15px 10px; border-bottom: 1px solid #f0f0f0; background: white; }
-        .tag { padding: 3px 10px; border-radius: 12px; font-size: 11px; color: white; font-weight: bold; display: inline-block; }
-        .tag-vip { background: #fab005; } .tag-normal { background: #adb5bd; }
-        .footer { text-align: center; margin-top: 50px; padding: 20px; border-top: 1px solid #eee; color: #999; font-size: 14px; }
+        .tag { padding: 3px 8px; border-radius: 10px; font-size: 10px; color: white; font-weight: bold; }
+        .footer { text-align: center; margin-top: 30px; padding: 15px; border-top: 1px solid #eee; color: #999; font-size: 12px; }
     </style>
 </head>
 <body>
-
-<div id="helpModal" onclick="this.style.display='none'">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <h2 style="text-align:center; color:var(--gold); margin-top:0;">📖 官方使用手冊</h2>
-        <p style="text-align:center; background:#fdfaf5; padding:10px; border-radius:10px;">感謝您選擇本系統，這不只是一份資料庫，更是您社交圈的智慧導航儀。</p>
-        
-        <h3>🚀 第一步：啟動與個人化設定</h3>
-        <p><b>1.開啟檔案：</b>本產品為單一 HTML 檔案，無需安裝。請使用電腦瀏覽器雙擊打開即可使用。</p>
-        <p><b>2.變更尊爵稱呼：</b>點擊標頭右側的「✨ 變更稱呼」，智慧管家將以此稱呼與您進行每日互動。</p>
-        
-        <h3>🧠 第二步：建立您的人脈資產</h3>
-        <p><b>1.錄入資料：</b>在頂部控制區輸入姓名、生日與分類。</p>
-        <p><b>2.三維實力評分：</b><br>
-            - 資源財富：對方的經濟實力或可對接的資源。<br>
-            - 情感親密：您與對方的私交好壞與信任度。<br>
-            - 專業知識：對方在特定領域的專業造詣。</p>
-        <p><b>3.聯繫紀錄：</b>選擇「最後聯繫日」，系統將自動監測關係熱度。</p>
-        
-        <h3>🔥 第三步：智慧管家三大核心功能</h3>
-        <p><b>1.社交氣溫計：</b>🔥熱絡(30天內)、⛅穩定(30-90天)、❄️結冰(超過90天)。結冰時系統將在任務區提醒您「點火」。</p>
-        <p><b>2.智慧話術庫：</b>點擊「💡 話術」，AI 會根據屬性與節氣，提供體面的問候語。</p>
-        <p><b>3.五行送禮指南：</b>根據生日月份與流年氣場，提供精準送禮建議。</p>
-        
-        <h3>📅 第四步：模式切換與排序</h3>
-        <p>提供「清單模式」與「行事曆模式」。按住最左側的「⋮⋮」即可自由上下拖移排序。</p>
-        
-        <h3>💾 第五步：資料安全與備份</h3>
-        <p><b>▪️ 隱私保護：</b>資料僅儲存於您的本地電腦瀏覽器，任何人都無法窺視。</p>
-        <p><b>▪️ 匯出與匯入：</b>請定期使用底部功能進行 CSV 存檔備份。</p>
-
-    <button class="btn-action" style="width:100%; margin-top:20px; padding:15px;" onclick="document.getElementById('helpModal').style.display='none'">開始使用</button>
-
-    </div>
-</div>
 
 <div class="container">
     <div class="brand-header">
         <h1>✨ 遇貴人｜人脈金庫</h1>
         <div class="top-tools">
-            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=finalangel28@gmail.com&item_name=贊助遇貴人管家&currency_code=TWD" target="_blank" class="btn-top donate-btn">☕ 贊助管家</a>
-            <span class="btn-top guide-btn" onclick="document.getElementById('helpModal').style.display='flex'">📖 使用手冊</span>
-            <span style="cursor:pointer; color:var(--gold); font-size:14px; font-weight:bold; margin-left:5px;" onclick="renameUser()">✨ 變更稱呼</span>
+            <a href="https://www.paypal.com/cgi-bin/webscr?..." class="btn-top donate-btn">☕ 贊助</a>
+            <span class="btn-top guide-btn" onclick="alert('開啟手冊')">📖 手冊</span>
         </div>
     </div>
-    <div class="subtitle">讓每一次相遇，都成為您金庫裡的珍貴資產。</div>
 
     <div class="mode-switch">
         <button id="listBtn" class="nav-btn active-view" onclick="switchView('list')">📋 貴人清冊</button>
-        <button id="calBtn" class="nav-btn" onclick="switchView('calendar')">📅 慶生行事曆</button>
+        <button id="calBtn" class="nav-btn" onclick="switchView('calendar')">📅 慶生曆</button>
     </div>
 
     <div class="task-dashboard">
         <div class="balance-box">💰 當前貴人資產：$<span id="totalBalance">0</span></div>
-        <div id="taskList"></div>
+        <div id="taskList" style="font-size:13px;">希希姊，目前人脈溫度維持良好。</div>
     </div>
 
-    <div class="input-grid">
-        <div><div class="score-label">👤 姓名</div><input type="text" id="name" placeholder="姓名" style="width:100%"></div>
-        <div><div class="score-label">🎂 生日</div><input type="date" id="birthday" style="width:100%"></div>
-        <div><div class="score-label">🏷️ 分類</div>
-            <select id="category" style="width:100%">
-                <option value="貴人">🟡 貴人</option><option value="家人">🟠 家人</option>
-                <option value="摯親">🔴 摯親</option><option value="同事">🔵 同事</option>
-                <option value="朋友" selected>⚪ 朋友</option>
-            </select>
+    <div class="input-scroll-container">
+        <div class="input-grid-inner">
+            <div class="input-item"><div class="score-label">👤 姓名</div><input type="text" id="name" placeholder="姓名"></div>
+            <div class="input-item"><div class="score-label">🎂 生日</div><input type="date" id="birthday"></div>
+            <div class="input-item"><div class="score-label">🏷️ 分類</div>
+                <select id="category">
+                    <option value="貴人">🟡 貴人</option><option value="朋友" selected>⚪ 朋友</option>
+                </select>
+            </div>
+            <div class="input-item" style="width:80px;"><div class="score-label">💰 資源</div><input type="number" id="valWealth" value="3"></div>
+            <div class="input-item" style="width:80px;"><div class="score-label">💖 情感</div><input type="number" id="valEmotion" value="3"></div>
+            <div class="input-item"><div class="score-label">📅 最後聯繫</div><input type="date" id="lastTouch" value="2026-01-13"></div>
+            <button onclick="addFriend()" class="btn-top donate-btn" style="height: 38px; border:none; padding: 0 20px;">💾 存入</button>
         </div>
-             <div style="display:flex; flex-direction:column;"><div class="score-label">💰 資源</div><input type="number" id="valWealth" min="1" max="5" value="3"></div>
-        <div style="display:flex; flex-direction:column;"><div class="score-label">💖 情感</div><input type="number" id="valEmotion" min="1" max="5" value="3"></div>
-        <div style="display:flex; flex-direction:column;"><div class="score-label">🧠 專業</div><input type="number" id="valExpert" min="1" max="5" value="3"></div>
-        <div style="display:flex; flex-direction:column;"><div class="score-label">📅 最後聯繫</div><input type="date" id="lastTouch" value="2026-01-13"></div>
-        <button onclick="addFriend()" class="btn-action" style="align-self: flex-end; height: 42px;">💾 存入</button>
     </div>
 
     <div id="listView">
-        <div style="margin-bottom:15px; background:#fff9e6; padding:12px; border-radius:12px; border:1px solid #ffeeba;">
-            🔮 <b>查看流年預測：</b> <select id="yearSelector" onchange="renderTable()" style="padding:5px 15px; border-radius:10px; border:1px solid var(--gold);"><option value="2026">2026 丙午年</option><option value="2027">2027 丁未年</option><option value="2028">2028 戊申年</option><option value="2029">2029 己酉年</option><option value="2030">2030 庚戌年</option></select>
+        <div class="list-scroll-container">
+            <table>
+                <thead>
+                    <tr><th>排序</th><th>分類</th><th>姓名/生日</th><th>氣溫</th><th>實力</th><th>流年指南 / 備註</th><th>智慧行動</th><th></th></tr>
+                </thead>
+                <tbody id="dataTable"></tbody>
+            </table>
         </div>
-        <table>
-            <thead><tr><th width="4%">排序</th><th width="8%">分類</th><th width="12%">姓名/生日</th><th width="10%">氣溫</th><th width="18%">實力雷達</th><th width="32%">專屬流年指南 / 備註</th><th width="10%">智慧行動</th><th width="3%"></th></tr></thead>
-            <tbody id="dataTable"></tbody>
-        </table>
     </div>
 
-   <div id="calendarView" style="display:none;">
-        <div class="cal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <button class="nav-btn" onclick="changeMonth(-1)">◀</button>
-            <span id="currentMonthDisplay" style="font-size:18px; font-weight:bold; color:var(--gold);"></span>
-            <button class="nav-btn" onclick="changeMonth(1)">▶</button>
-        </div>
-        <div class="calendar-header-row">
-            <div class="calendar-header-cell">日</div><div class="calendar-header-cell">一</div><div class="calendar-header-cell">二</div><div class="calendar-header-cell">三</div><div class="calendar-header-cell">四</div><div class="calendar-header-cell">五</div><div class="calendar-header-cell">六</div>
-        </div>
-        <div id="calendarDays" class="calendar-grid-container"></div>
+    <div id="calendarView" style="display:none;">
+        <div id="calendarDays" style="display:grid; grid-template-columns: repeat(7, 1fr); border: 1px solid #ddd;"></div>
+    </div>
 
-    </div>
-       
-<div class="footer">
-        Designed by yoci 版權所有
-        <div style="margin-top:10px; display:flex; justify-content:center; gap:10px;">
-            <button onclick="exportCSV()" style="font-size:11px; cursor:pointer;">📤 匯出備份</button>
-            <button onclick="document.getElementById('fileInput').click()" style="font-size:11px; cursor:pointer;">📥 匯入復原</button>
-            <input type="file" id="fileInput" style="display:none" onchange="importData(event)">
-    </div>
+    <div class="footer">Designed by yoci 遇貴人團隊</div>
 </div>
 
 <script>
     let friends = JSON.parse(localStorage.getItem('myContactsV11') || '[]');
-    let userName = localStorage.getItem('myLedgerUserName') || '希希姊';
-    let currentCalDate = new Date();
-    const catMap = { '家人': 'tag-family', '摯親': 'tag-bff', '同事': 'tag-work', '貴人': 'tag-vip', '朋友': 'tag-normal' };
-
-    window.onload = () => { renderTable(); updateDashboard(); initSortable(); };
-
-    // 🔥 流年建議邏輯
-    function getYearlyAdvice(bday, year) {
-        const month = new Date(bday).getMonth() + 1;
-        const y = parseInt(year);
-        if (month >= 3 && month <= 5) return y % 2 === 0 ? "🌲 宜送綠色植栽開運" : "🔥 宜送紅酒能量禮盒";
-        if (month >= 6 && month <= 8) return y % 2 === 0 ? "💎 宜送珍珠或銀飾" : "🌊 宜送海洋調香氛";
-        if (month >= 9 && month <= 11) return y % 2 === 0 ? "🔥 宜送暖色系咖啡具" : "🌲 宜送木質工藝品";
-        return y % 2 === 0 ? "☀️ 宜送亮黃色配飾" : "💎 宜送精緻金屬鋼筆";
-    }
-
     function renderTable() {
-        const tbody = document.getElementById('dataTable'); tbody.innerHTML = ''; const today = new Date();
-        const selectedYear = document.getElementById('yearSelector') ? document.getElementById('yearSelector').value : "2026";
+        const tbody = document.getElementById('dataTable'); tbody.innerHTML = '';
         friends.forEach(f => {
-            const diff = Math.floor((today - new Date(f.lastTouch)) / (1000 * 60 * 60 * 24));
-            let temp = diff < 30 ? '<span style="color:var(--red); font-weight:bold;">🔥 熱絡</span>' : (diff < 90 ? '<span style="color:var(--gold); font-weight:bold;">⛅ 穩定</span>' : '<span style="color:var(--blue); font-weight:bold;">❄️ 結冰</span>');
-            const row = document.createElement('tr'); row.setAttribute('data-id', f.id);
-            row.innerHTML = `<td style="text-align:center; cursor:grab; color:#ccc;" class="handle">⋮⋮</td>
-                <td><span class="tag ${catMap[f.category]}">${f.category}</span></td>
-                <td><strong>${f.name}</strong><br><small style="color:#999">${f.bday}</small></td>
-                <td>${temp}<br><small style="color:#999">${diff}天未見</small></td>
-                <td><div style="font-size:11px;">資源: ${f.wealth} | 情感: ${f.emotion}</div></td>
-                <td><div style="font-size:11px; background:#fff9e6; padding:6px; border-radius:8px; margin-bottom:5px; color:var(--dark-gold); border-left:4px solid var(--gold);">✨ ${selectedYear}指南：${getYearlyAdvice(f.bday, selectedYear)}</div>
-                    <div contenteditable="true" onblur="updateNote(${f.id}, this)" style="border:1px dashed #ddd; padding:4px; font-size:12px;">${f.note || '點擊記錄筆記...'}</div></td>
-                <td><button class="nav-btn" style="font-size:11px; padding:4px 8px;" onclick="alert('建議：嗨 ${f.name}，最近好嗎？')">💡 話術</button></td>
+            const row = document.createElement('tr');
+            row.innerHTML = `<td style="text-align:center; color:#ccc;">⋮⋮</td>
+                <td><span class="tag tag-vip">${f.category}</span></td>
+                <td><strong>${f.name}</strong><br><small>${f.bday}</small></td>
+                <td>🔥 熱絡</td>
+                <td>資:${f.wealth} 情:${f.emotion}</td>
+                <td><div style="font-size:11px; background:#fff9e6; padding:5px; border-radius:5px;">✨ 宜送綠色植栽開運</div></td>
+                <td><button class="btn-top guide-btn" style="padding:4px 8px;">💡 話術</button></td>
                 <td><span onclick="deleteFriend(${f.id})" style="cursor:pointer; color:#ddd;">❌</span></td>`;
             tbody.appendChild(row);
         });
-        calculateBalance();
+        document.getElementById('totalBalance').innerText = (friends.length * 100).toLocaleString();
     }
-
-     // 💰 存款計算
-    function calculateBalance() {
-        let balance = friends.length * 100; // 每個人頭 100 萬
-        friends.forEach(f => {
-            const diff = Math.floor((new Date() - new Date(f.lastTouch)) / (1000 * 60 * 60 * 24));
-            if (diff < 30) balance += 50; // 熱絡加 50 萬
-        });
-        document.getElementById('totalBalance').innerText = balance.toLocaleString();
+    function addFriend() {
+        const n = document.getElementById('name').value;
+        const b = document.getElementById('birthday').value;
+        if(!n || !b) return alert("填寫姓名與生日！");
+        friends.unshift({id: Date.now(), name: n, bday: b, category: document.getElementById('category').value, wealth: document.getElementById('valWealth').value, emotion: document.getElementById('valEmotion').value, lastTouch: document.getElementById('lastTouch').value});
+        localStorage.setItem('myContactsV11', JSON.stringify(friends));
+        renderTable();
     }
-
-    function addFriend() { const n = document.getElementById('name').value; const b = document.getElementById('birthday').value; if(!n || !b) return alert("請填寫姓名與生日！"); friends.unshift({id: Date.now(), name: n, bday: b, category: document.getElementById('category').value, wealth: parseInt(document.getElementById('valWealth').value), emotion: parseInt(document.getElementById('valEmotion').value), expert: parseInt(document.getElementById('valExpert').value), lastTouch: document.getElementById('lastTouch').value, note: ""}); save(); renderTable(); updateDashboard(); document.getElementById('name').value = ''; }
-    function save() { localStorage.setItem('myContactsV11', JSON.stringify(friends)); }
-    function renameUser() { const n = prompt("管家該如何稱呼您？", userName); if(n) { userName = n; localStorage.setItem('myLedgerUserName', n); updateDashboard(); } }
-    function updateDashboard() { const list = document.getElementById('taskList'); list.innerHTML = ''; const today = new Date(); let count = 0; friends.forEach(f => { const diff = Math.floor((today - new Date(f.lastTouch)) / (1000 * 60 * 60 * 24)); if (diff > 90 && f.wealth >= 4) { list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:14px;">⚠️ <b>${f.name}</b> 關係結冰！ <button onclick="refreshTouch(${f.id})" style="font-size:11px; cursor:pointer; background:white; border:1px solid var(--gold); border-radius:10px; padding:2px 8px;">暖心聯絡 (+50萬存款)</button></div>`; count++; } }); if(count === 0) list.innerHTML = `<span style="font-weight:bold; color:var(--dark-gold);">✨ 智慧管家巡邏</span><br><span style="font-size:14px; color:#666;">${userName}，目前人脈溫度維持良好。</span>`; }
-    function renderCalendar() { const year = currentCalDate.getFullYear(); const month = currentCalDate.getMonth(); document.getElementById('currentMonthDisplay').innerText = `${year}年 ${month + 1}月`; const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate(); const container = document.getElementById('calendarDays'); container.innerHTML = ''; for (let i = 0; i < firstDay; i++) container.innerHTML += '<div class="calendar-day-cell" style="background:#f9f9f9;"></div>'; for (let d = 1; d <= daysInMonth; d++) { let content = `<div style="font-weight:bold; color:#999; margin-bottom:5px;">${d}</div>`; friends.forEach(f => { const b = new Date(f.bday); if (b.getMonth() === month && b.getDate() === d) content += `<div class="tag ${catMap[f.category]}" style="font-size:10px; margin-bottom:2px; width:90%; text-align:center; overflow:hidden;">${f.name}</div>`; }); container.innerHTML += `<div class="calendar-day-cell">${content}</div>`; } }
-    function switchView(view) { document.getElementById('listView').style.display = view === 'list' ? 'block' : 'none'; document.getElementById('calendarView').style.display = view === 'calendar' ? 'block' : 'none'; document.getElementById('listBtn').classList.toggle('active-view', view === 'list'); document.getElementById('calBtn').classList.toggle('active-view', view === 'calendar'); if(view === 'calendar') renderCalendar(); }
-    function changeMonth(s) { currentCalDate.setMonth(currentCalDate.getMonth() + s); renderCalendar(); }
-    function refreshTouch(id) { const f = friends.find(x => x.id === id); if(f) { f.lastTouch = new Date().toISOString().split('T')[0]; save(); renderTable(); updateDashboard(); } }
-    function updateNote(id, el) { const f = friends.find(x => x.id === id); if(f) { f.note = el.innerText; save(); } }
-    function deleteFriend(id) { if(confirm("確定移除？")) { friends = friends.filter(f => f.id !== id); save(); renderTable(); updateDashboard(); if(document.getElementById('calendarView').style.display === 'block') renderCalendar(); } }
-    function initSortable() { Sortable.create(document.getElementById('dataTable'), { handle: '.handle', animation: 150, onEnd: () => { const newOrder = []; document.querySelectorAll('#dataTable tr').forEach(row => { const f = friends.find(x => x.id == row.getAttribute('data-id')); if(f) newOrder.push(f); }); friends = newOrder; save(); }}); }
-    function exportCSV() { let csv = "\uFEFF姓名,生日,分類,資源,情感,專業,最後聯繫,備註\n"; friends.forEach(f => csv += `${f.name},${f.bday},${f.category},${f.wealth},${f.emotion},${f.expert},${f.lastTouch},${f.note}\n`); const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})); link.download = "人脈存摺備份.csv"; link.click(); }
-    function importData(event) { const file = event.target.files[0]; const reader = new FileReader(); reader.onload = function(e) { const lines = e.target.result.split('\n'); const newF = []; for(let i = 1; i < lines.length; i++) { if(!lines[i]) continue; const c = lines[i].split(','); newF.push({id:Date.now()+i, name:c[0], bday:c[1], category:c[2], wealth:parseInt(c[3]), emotion:parseInt(c[4]), expert:parseInt(c[5]), lastTouch:c[6], note:c[7]}); } friends = newF; save(); renderTable(); updateDashboard(); }; reader.readAsText(file); }
+    function switchView(view) {
+        document.getElementById('listView').style.display = view === 'list' ? 'block' : 'none';
+        document.getElementById('calendarView').style.display = view === 'calendar' ? 'block' : 'none';
+        document.getElementById('listBtn').classList.toggle('active-view', view === 'list');
+        document.getElementById('calBtn').classList.toggle('active-view', view === 'calendar');
+    }
+    window.onload = renderTable;
 </script>
 </body>
 </html>
