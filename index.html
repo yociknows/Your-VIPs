@@ -154,35 +154,25 @@
 </div>
 
 <script>
+    // 💡 修正：讀取暱稱用 yociUserFinal，讀取資料庫用 yociVaultFinal
     let friends = JSON.parse(localStorage.getItem('yociVaultFinal') || '[]');
-    let userName = localStorage.getItem('yociVaultFinal') || '希姊';
+    let userName = localStorage.getItem('yociUserFinal') || '希姊';
     let curDate = new Date();
 
     window.onload = () => { renderTable(); updateMsg(); };
 
-   function calculateBalance() {
+    function calculateBalance() {
         let totalBalance = 0;
         const today = new Date();
-
         friends.forEach(f => {
-            // 1. 基本底薪 $2,000 + 實力加成 (資源+專業 每分$3,000)
+            // 💰 採用希希姊要求的「幾千元」量級資產公式
             let baseValue = 2000 + (Number(f.wealth) + Number(f.expert)) * 3000;
-            
-            // 2. 情感加成 (情感 每分$2000)
             let emotionBonus = Number(f.emotion) * 2000;
-            
             let personValue = baseValue + emotionBonus;
-
-            // 3. 熱絡加權 (30天內聯繫，價值放大 1.5 倍)
             const diff = Math.floor((today - new Date(f.lastTouch)) / (1000 * 60 * 60 * 24));
-            if (diff < 30) {
-                personValue = personValue * 1.5; 
-            }
-
+            if (diff < 30) personValue = personValue * 1.5; 
             totalBalance += personValue;
         });
-
-        // 顯示總資產，四捨五入並轉為千分位格式
         document.getElementById('totalBalance').innerText = Math.round(totalBalance).toLocaleString();
     }
 
@@ -190,22 +180,11 @@
         const tb = document.getElementById('dataTable'); tb.innerHTML = '';
         const today = new Date();
         friends.forEach((f, index) => {
-            const diff = Math.floor((today - new Date(f.lastTouch)) / (1000 * 60 * 60 * 24));
+            const diff = Math.floor((today - new Date(f.lastTouch)) / 86400000);
             let temp = diff < 30 ? '<span style="color:var(--red); font-weight:bold;">🔥 熱絡</span>' : (diff < 90 ? '<span style="color:var(--gold);">⛅ 穩定</span>' : '<span style="color:var(--blue);">❄️ 結冰</span>');
-            
-            // 🔮 AI 送禮指南邏輯
             const month = new Date(f.bday).getMonth() + 1;
-            let giftAdvice = "";
-            if ([2, 3, 4].includes(month)) giftAdvice = "宜送：精緻植栽、木質擴香 (補木氣)";
-            else if ([5, 6, 7].includes(month)) giftAdvice = "宜送：紅酒、精品香氛、紅色配飾 (旺火運)";
-            else if ([8, 9, 10].includes(month)) giftAdvice = "宜送：金屬鋼筆、珍珠飾品、名片夾 (穩金氣)";
-            else giftAdvice = "宜送：海洋香水、深藍絲巾、智慧手環 (潤水德)";
-
-            // 💡 智慧行動話術
-            let actionText = "最近好嗎？";
-            if (diff > 90) actionText = `好久不見，${f.name} 的生日快到了，約個飯？`;
-            else if (f.wealth >= 4) actionText = "有個商業資源想請教您的專業意見，有空聊聊嗎？";
-
+            let giftAdvice = ([2,3,4].includes(month)) ? "精緻植栽、木質擴香" : ([5,6,7].includes(month)) ? "紅酒、精品香氛" : ([8,9,10].includes(month)) ? "金屬鋼筆、名片夾" : "海洋香水、智慧手環";
+            let actionText = (diff > 90) ? "好久不見，約個飯？" : (f.wealth >= 4) ? "請教專業意見" : "分享好物";
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td style="text-align:center; color:#ccc;">${index + 1}</td>
@@ -213,31 +192,26 @@
                 <td><strong>${f.name}</strong><br><small>${f.bday}</small></td>
                 <td>${temp}<br><small style="color:#999">${diff}天</small></td>
                 <td><small>資:${f.wealth} 情:${f.emotion} 專:${f.expert}</small></td>
-                <td><div style="font-size:11px; background:#fff9e6; padding:5px; border-radius:5px; border-left:3px solid var(--gold);">✨ 2026 送禮指南：${giftAdvice}<br><div contenteditable="true" style="margin-top:4px; border-top:1px dashed #ddd; padding-top:4px;">${f.note || '點擊記錄筆記...'}</div></div></td>
-                <td><button class="nav-btn" style="font-size:10px; padding:4px 8px;" onclick="alert('💡 建議話術：${actionText}')">智慧行動</button></td>
+                <td><div style="font-size:11px; background:#fff9e6; padding:5px; border-radius:5px; border-left:3px solid var(--gold);">✨ 2026 送禮指南：${giftAdvice}<br><div contenteditable="true" onblur="saveNote(${f.id}, this)" style="margin-top:4px; border-top:1px dashed #ddd;">${f.note || '記錄筆記...'}</div></div></td>
+                <td><button class="nav-btn" style="font-size:10px; padding:4px 8px;" onclick="alert('建議：${actionText}')">智慧行動</button></td>
                 <td><span onclick="deleteFriend(${f.id})" style="cursor:pointer; color:#ddd;">❌</span></td>`;
             tb.appendChild(row);
         });
         calculateBalance();
     }
 
-function addFriend() {
+    function addFriend() {
         const n = document.getElementById('name').value, b = document.getElementById('birthday').value;
         const cat = document.getElementById('category').value, lt = document.getElementById('lastTouch').value;
-        
-        // 💡 直接抓取下拉選單的值，不再需要 Math.min 做複雜限制
-        const w = document.getElementById('valWealth').value;
-        const e = document.getElementById('valEmotion').value;
-        const ex = document.getElementById('valExpert').value;
-
+        const w = document.getElementById('valWealth').value, e = document.getElementById('valEmotion').value, ex = document.getElementById('valExpert').value;
         if(!n || !b) return alert("希姊，請填寫姓名生日！");
         friends.unshift({id: Date.now(), name: n, bday: b, category: cat, lastTouch: lt, wealth: w, emotion: e, expert: ex, note: ""});
         localStorage.setItem('yociVaultFinal', JSON.stringify(friends)); 
-        renderTable();
-        document.getElementById('name').value = ''; // 存入後自動清空姓名 
+        renderTable(); updateMsg();
+        document.getElementById('name').value = ''; 
     }
 
-     function renderCalendar() {
+    function renderCalendar() {
         const y = curDate.getFullYear(), m = curDate.getMonth();
         document.getElementById('monthTitle').innerText = `${y}年 ${m+1}月`;
         const first = new Date(y, m, 1).getDay(), days = new Date(y, m+1, 0).getDate();
@@ -259,9 +233,9 @@ function addFriend() {
         if(v==='calendar') renderCalendar();
     }
     function showModal() { document.getElementById('helpModal').style.display = 'flex'; }
-    function renameUser() { const n = prompt("管家該如何稱呼您？", userName); if(n) { userName = n; localStorage.setItem('yociUserFinal', n); updateMsg(); } }
+    function renameUser() { const n = prompt("如何稱呼您？", userName); if(n) { userName = n; localStorage.setItem('yociUserFinal', n); updateMsg(); } }
     function updateMsg() { document.getElementById('taskList').innerText = `智慧管家巡邏中：${userName}，目前溫度良好。`; }
     function saveNote(id, el) { const f = friends.find(x => x.id === id); if(f) { f.note = el.innerText; localStorage.setItem('yociVaultFinal', JSON.stringify(friends)); } }
     function deleteFriend(id) { if(confirm("確定移除？")) { friends=friends.filter(f=>f.id!==id); localStorage.setItem('yociVaultFinal', JSON.stringify(friends)); renderTable(); } }
+    function exportCSV() { let csv = "\uFEFF姓名,生日,分類,最後聯繫\n"; friends.forEach(f => csv += `${f.name},${f.bday},${f.category},${f.lastTouch}\n`); const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8;'})); link.download = "備份.csv"; link.click(); }
 </script>
-
