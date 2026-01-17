@@ -2,148 +2,163 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>遇貴人｜您的人脈金庫</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>遇貴人｜您的尊爵人脈金庫</title>
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="遇貴人">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="https://via.placeholder.com/192/b8962d/ffffff?text=遇">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <style>
         :root { --gold: #b8962d; --bg: #fdfaf5; --dark-gold: #8b6e1b; --task-bg: #fff9e6; --red: #e67e22; --blue: #3498db; }
         body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: #333; overflow-x: hidden; }
-        .container { max-width: 1400px; margin: auto; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); min-height: 90vh; }
+        .container { max-width: 1400px; margin: auto; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); min-height: 95vh; box-sizing: border-box; }
         
         /* 標頭優化 */
-        .brand-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: nowrap; }
-        h1 { color: var(--gold); letter-spacing: 1px; font-size: 20px; margin: 0; white-space: nowrap; }
-        .top-tools { display: flex; gap: 5px; }
-        .btn-top { color: white; padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 11px; font-weight: bold; text-decoration: none; white-space: nowrap; }
+        .brand-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        h1 { color: var(--gold); letter-spacing: 2px; font-size: 24px; margin: 0; }
+        .top-tools { display: flex; gap: 8px; align-items: center; }
+        .btn-top { color: white; padding: 5px 12px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold; transition: 0.3s; text-decoration: none; }
         .guide-btn { background: #333; }
         .donate-btn { background: var(--gold); }
 
-        /* 🔥 輸入區橫向捲動優化 */
-        .input-scroll-container { 
-            width: 100%; 
-            overflow-x: auto; 
-            white-space: nowrap; 
-            background: #f9f9f9; 
-            padding: 15px; 
-            border-radius: 15px; 
-            border: 1px solid #eee; 
-            margin-bottom: 20px;
-            -webkit-overflow-scrolling: touch; /* 讓手機滑動更順暢 */
-        }
+        /* 使用手冊彈窗 */
+        #helpModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; width: 90%; max-height: 80vh; overflow-y: auto; line-height: 1.6; }
+        
+        .mode-switch { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .nav-btn { background: #eee; border: none; padding: 8px 18px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .active-view { background: var(--gold) !important; color: white !important; }
+
+        .task-dashboard { background: var(--task-bg); padding: 15px; border-radius: 15px; border: 2px dashed var(--gold); margin-bottom: 20px; }
+        .balance-box { font-size: 20px; color: var(--dark-gold); font-weight: bold; margin-bottom: 8px; }
+
+        /* 🔥 手機橫軸滑動輸入區 */
+        .input-scroll-container { width: 100%; overflow-x: auto; white-space: nowrap; background: #f9f9f9; padding: 15px; border-radius: 15px; border: 1px solid #eee; margin-bottom: 20px; -webkit-overflow-scrolling: touch; }
         .input-grid-inner { display: inline-flex; gap: 12px; align-items: flex-end; }
         .input-item { width: 140px; flex-shrink: 0; display: flex; flex-direction: column; }
-        .score-label { font-size: 11px; font-weight: bold; color: var(--dark-gold); margin-bottom: 5px; }
-        input, select { padding: 8px; border-radius: 8px; border: 1px solid #ddd; height: 38px; font-size: 14px; width: 100%; box-sizing: border-box; }
+        .score-label { font-size: 11px; font-weight: bold; color: var(--dark-gold); margin-bottom: 4px; }
+        input, select { padding: 8px; border-radius: 8px; border: 1px solid #ddd; height: 38px; width: 100%; box-sizing: border-box; }
 
-        /* 🔥 清單表格橫向捲動優化 */
-        .list-scroll-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 10px; }
+        /* 🔥 表格橫軸滑動區 */
+        .table-scroll { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; min-width: 800px; }
-        th { background: var(--gold); color: white; padding: 12px 10px; text-align: left; font-size: 13px; }
-        td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; background: white; font-size: 13px; }
+        th { background: var(--gold); color: white; padding: 12px 10px; text-align: left; }
+        td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; background: white; }
 
-        .balance-box { font-size: 18px; color: var(--dark-gold); font-weight: bold; margin-bottom: 10px; }
-        .task-dashboard { background: var(--task-bg); padding: 15px; border-radius: 15px; border: 1px dashed var(--gold); margin-bottom: 20px; }
-        .mode-switch { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .nav-btn { background: #eee; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; font-weight: bold; font-size: 13px; flex: 1; max-width: 140px; }
-        .active-view { background: var(--gold) !important; color: white !important; }
-        .tag { padding: 3px 8px; border-radius: 10px; font-size: 10px; color: white; font-weight: bold; }
-        .footer { text-align: center; margin-top: 30px; padding: 15px; border-top: 1px solid #eee; color: #999; font-size: 12px; }
+        /* 🔥 行事曆日一二三四五六修正 */
+        .calendar-header-row { display: grid !important; grid-template-columns: repeat(7, 1fr) !important; background: var(--gold); color: white; width: 100%; }
+        .calendar-header-cell { padding: 10px 0; text-align: center; font-weight: bold; border-right: 1px solid rgba(255,255,255,0.2); }
+        .calendar-grid-container { display: grid !important; grid-template-columns: repeat(7, 1fr) !important; border: 1px solid #ddd; background: #eee; width: 100%; }
+        .calendar-day-cell { height: 100px; background: white; border: 0.5px solid #eee; padding: 5px; overflow-y: auto; }
+
+        .footer { text-align: center; margin-top: 30px; padding: 20px; border-top: 1px solid #eee; color: #999; font-size: 13px; }
+        .btn-action { background: var(--gold); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; }
     </style>
 </head>
 <body>
 
+<div id="helpModal" onclick="this.style.display='none'">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h2 style="text-align:center; color:var(--gold); margin-top:0;">📖 官方使用手冊</h2>
+        <p><b>✨ 遇貴人：智慧管理您的每一份關係資產。</b></p>
+        <p>1. 錄入資料後，資產會自動計算。熱絡聯絡可增加價值。</p>
+        <p>2. 定期匯出 CSV 備份您的金庫資料。</p>
+        <button class="btn-action" onclick="document.getElementById('helpModal').style.display='none'">開始使用</button>
+    </div>
+</div>
+
 <div class="container">
     <div class="brand-header">
-        <h1>✨ 遇貴人｜人脈金庫</h1>
+        <h1>✨ 遇貴人</h1>
         <div class="top-tools">
-            <a href="https://www.paypal.com/cgi-bin/webscr?..." class="btn-top donate-btn">☕ 贊助</a>
-            <span class="btn-top guide-btn" onclick="alert('開啟手冊')">📖 手冊</span>
+            <a href="https://paypal.me/yociknows" target="_blank" class="btn-top donate-btn">☕ 贊助</a>
+            <span class="btn-top guide-btn" onclick="document.getElementById('helpModal').style.display='flex'">📖 手冊</span>
+            <span style="cursor:pointer; color:var(--gold); font-size:12px; font-weight:bold;" onclick="renameUser()">✨ 改稱呼</span>
         </div>
     </div>
-
+    
     <div class="mode-switch">
         <button id="listBtn" class="nav-btn active-view" onclick="switchView('list')">📋 貴人清冊</button>
         <button id="calBtn" class="nav-btn" onclick="switchView('calendar')">📅 慶生曆</button>
     </div>
 
     <div class="task-dashboard">
-        <div class="balance-box">💰 當前貴人資產：$<span id="totalBalance">0</span></div>
-        <div id="taskList" style="font-size:13px;">希希姊，目前人脈溫度維持良好。</div>
+        <div class="balance-box">💰 貴人資產：$<span id="totalBalance">0</span></div>
+        <div id="taskList" style="font-size:13px; color:#666;">希希姊，目前人脈溫度維持良好。</div>
     </div>
 
     <div class="input-scroll-container">
         <div class="input-grid-inner">
             <div class="input-item"><div class="score-label">👤 姓名</div><input type="text" id="name" placeholder="姓名"></div>
             <div class="input-item"><div class="score-label">🎂 生日</div><input type="date" id="birthday"></div>
-            <div class="input-item"><div class="score-label">🏷️ 分類</div>
-                <select id="category">
-                    <option value="貴人">🟡 貴人</option><option value="朋友" selected>⚪ 朋友</option>
-                </select>
-            </div>
             <div class="input-item" style="width:80px;"><div class="score-label">💰 資源</div><input type="number" id="valWealth" value="3"></div>
             <div class="input-item" style="width:80px;"><div class="score-label">💖 情感</div><input type="number" id="valEmotion" value="3"></div>
-            <div class="input-item"><div class="score-label">📅 最後聯繫</div><input type="date" id="lastTouch" value="2026-01-13"></div>
+            <div class="input-item"><div class="score-label">📅 聯繫日</div><input type="date" id="lastTouch" value="2026-01-17"></div>
             <button onclick="addFriend()" class="btn-top donate-btn" style="height: 38px; border:none; padding: 0 20px;">💾 存入</button>
         </div>
     </div>
 
     <div id="listView">
-        <div class="list-scroll-container">
+        <div class="table-scroll">
             <table>
-                <thead>
-                    <tr><th>排序</th><th>分類</th><th>姓名/生日</th><th>氣溫</th><th>實力</th><th>流年指南 / 備註</th><th>智慧行動</th><th></th></tr>
-                </thead>
+                <thead><tr><th>排序</th><th>姓名/生日</th><th>熱度</th><th>流年指南 / 備註</th><th></th></tr></thead>
                 <tbody id="dataTable"></tbody>
             </table>
         </div>
     </div>
 
     <div id="calendarView" style="display:none;">
-        <div id="calendarDays" style="display:grid; grid-template-columns: repeat(7, 1fr); border: 1px solid #ddd;"></div>
+        <div class="calendar-header-row">
+            <div class="calendar-header-cell">日</div><div class="calendar-header-cell">一</div><div class="calendar-header-cell">二</div><div class="calendar-header-cell">三</div><div class="calendar-header-cell">四</div><div class="calendar-header-cell">五</div><div class="calendar-header-cell">六</div>
+        </div>
+        <div id="calendarDays" class="calendar-grid-container"></div>
     </div>
 
-    <div class="footer">Designed by yoci 遇貴人團隊</div>
+    <div class="footer">
+        Designed by yoci 遇貴人團隊 | 
+        <button onclick="exportCSV()" style="font-size:11px;">📤 匯出備份</button>
+    </div>
 </div>
 
 <script>
-    let friends = JSON.parse(localStorage.getItem('myContactsV11') || '[]');
+    let friends = JSON.parse(localStorage.getItem('yociVaultV1') || '[]');
+    let userName = localStorage.getItem('yociUser') || '希希姊';
+    let currentCalDate = new Date();
+
+    window.onload = () => { renderTable(); renderCalendar(); };
+
     function renderTable() {
         const tbody = document.getElementById('dataTable'); tbody.innerHTML = '';
         friends.forEach(f => {
             const row = document.createElement('tr');
             row.innerHTML = `<td style="text-align:center; color:#ccc;">⋮⋮</td>
-                <td><span class="tag tag-vip">${f.category}</span></td>
                 <td><strong>${f.name}</strong><br><small>${f.bday}</small></td>
                 <td>🔥 熱絡</td>
-                <td>資:${f.wealth} 情:${f.emotion}</td>
-                <td><div style="font-size:11px; background:#fff9e6; padding:5px; border-radius:5px;">✨ 宜送綠色植栽開運</div></td>
-                <td><button class="btn-top guide-btn" style="padding:4px 8px;">💡 話術</button></td>
+                <td><div style="font-size:11px; background:#fff9e6; padding:5px; border-radius:5px;">✨ 2026 指南：宜送綠色植栽</div></td>
                 <td><span onclick="deleteFriend(${f.id})" style="cursor:pointer; color:#ddd;">❌</span></td>`;
             tbody.appendChild(row);
         });
-        document.getElementById('totalBalance').innerText = (friends.length * 100).toLocaleString();
+        document.getElementById('totalBalance').innerText = (friends.length * 1000000).toLocaleString();
     }
+
     function addFriend() {
         const n = document.getElementById('name').value;
         const b = document.getElementById('birthday').value;
         if(!n || !b) return alert("填寫姓名與生日！");
-        friends.unshift({id: Date.now(), name: n, bday: b, category: document.getElementById('category').value, wealth: document.getElementById('valWealth').value, emotion: document.getElementById('valEmotion').value, lastTouch: document.getElementById('lastTouch').value});
-        localStorage.setItem('myContactsV11', JSON.stringify(friends));
+        friends.unshift({id: Date.now(), name: n, bday: b, lastTouch: document.getElementById('lastTouch').value});
+        localStorage.setItem('yociVaultV1', JSON.stringify(friends));
         renderTable();
     }
-    function switchView(view) {
-        document.getElementById('listView').style.display = view === 'list' ? 'block' : 'none';
-        document.getElementById('calendarView').style.display = view === 'calendar' ? 'block' : 'none';
-        document.getElementById('listBtn').classList.toggle('active-view', view === 'list');
-        document.getElementById('calBtn').classList.toggle('active-view', view === 'calendar');
-    }
-    window.onload = renderTable;
-</script>
-</body>
-</html>
+
+    function renderCalendar() {
+        const year = currentCalDate.getFullYear(); const month = currentCalDate.getMonth();
+        const firstDay = new Date(year, month, 1).getDay(); const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const container = document.getElementById('calendarDays'); container.innerHTML = '';
+        for (let i = 0; i < firstDay; i++) container.innerHTML += '<div class="calendar-day-cell" style="background:#f9f9f9;"></div>';
+        for (let d = 1; d <= daysInMonth; d++) {
+            let content = `<div style="font-weight:bold; color:#999;">${d}</div>`;
+            friends.forEach(f => {
+                const
