@@ -259,8 +259,9 @@ function addFriend() {
         if(v==='calendar') renderCalendar();
     }
     function showModal() { document.getElementById('helpModal').style.display = 'flex'; }
-    function renameUser() { const n = prompt("管家該如何稱呼您？", userName); if(n) { userName = n; localStorage.setItem('yociVaultFinal', n); updateMsg(); } }
+    function renameUser() { const n = prompt("管家該如何稱呼您？", userName); if(n) { userName = n; localStorage.setItem('yociUserFinal', n); updateMsg(); } }
     function updateMsg() { document.getElementById('taskList').innerText = `智慧管家巡邏中：${userName}，目前溫度良好。`; }
     function saveNote(id, el) { const f = friends.find(x => x.id === id); if(f) { f.note = el.innerText; localStorage.setItem('yociVaultFinal', JSON.stringify(friends)); } }
     function deleteFriend(id) { if(confirm("確定移除？")) { friends=friends.filter(f=>f.id!==id); localStorage.setItem('yociVaultFinal', JSON.stringify(friends)); renderTable(); } }
 </script>
+
