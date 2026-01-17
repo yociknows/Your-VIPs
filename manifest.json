@@ -1,0 +1,20 @@
+{
+  "name": "遇貴人｜你的人脈金庫",
+  "short_name": "遇貴人",
+  "start_url": "/Your-VIPs/",
+  "display": "standalone",
+  "background_color": "#fdfaf5",
+  "theme_color": "#b8962d",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192/b8962d/ffffff?text=遇",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512/b8962d/ffffff?text=遇",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
